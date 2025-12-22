@@ -1,9 +1,14 @@
 "use client";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+
 
 export default function Home() {
+  const router = useRouter();
+
   function handleClick() {
-    console.log("Button has been clicked");
+    router.push("/interview");
+    console.log("Get Started button has been clicked");
   }
 
   return (
