@@ -8,9 +8,12 @@ export default function InterviewPage() {
     const [messages, setMessages] = useState([{role : "bot", text: "Tell me about yourself?"}]);
     const chatRef = useRef<HTMLDivElement | null>(null)
 
+    //Used to access the questions array
     const [qIndex, setQIndex] = useState(0);
 
-    const startListening = () => {
+    //This is for accessing the speech recognition
+    function startListening() {
+      //Creates a new instance of speech recognition
       const SpeechRecognition =
         (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
@@ -26,15 +29,10 @@ export default function InterviewPage() {
       recognition.onresult = (e: SpeechRecognitionEvent) => {
         const transcript = e.results[0][0].transcript;
         recognition.stop();
-
         setMessages((prev) => [...prev, { role: "user", text: transcript }]);
-
         if (!questions[qIndex + 1]) return;
-
         const nextQ = questions[qIndex + 1].text;
-
         setMessages((prev) => [...prev, { role: "bot", text: nextQ }]);
-
         setQIndex((i) => i + 1);
       };
     };
@@ -44,7 +42,6 @@ export default function InterviewPage() {
             chatRef.current.scrollTop = chatRef.current.scrollHeight;
         }
     }, [messages]);
-
 
 
     // Fetch the interview questions from local JSON file (TEMPORARY)
@@ -64,10 +61,7 @@ export default function InterviewPage() {
     }, []);
 
     return (
-      <div
-        className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans"
-        style={{ backgroundColor: "rgb(43, 48, 59)" }}
-      >
+      <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans gradient-bg">
         <div className="flex items-center gap-4">
           <video
             ref={videoRef}
@@ -76,7 +70,7 @@ export default function InterviewPage() {
           />
           <div
             ref={chatRef}
-            className="bg-black text-white w-160 h-120 rounded-lg overflow-y-auto p-4 space-y-2"
+            className="chat-input-bg w-160 h-120 rounded-lg overflow-y-auto p-4 space-y-2"
           >
             {messages.map((m, i) => (
               <p
