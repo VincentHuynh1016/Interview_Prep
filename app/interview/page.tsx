@@ -73,14 +73,22 @@ export default function InterviewPage() {
             className="chat-input-bg w-160 h-120 rounded-lg overflow-y-auto p-4 space-y-2"
           >
             {messages.map((m, i) => (
-              <p
+              <div
                 key={i}
-                className={
-                  m.role === "bot" ? "text-blue-400" : "text-green-400"
-                }
+                className={`flex ${
+                  m.role === "bot" ? "justify-start" : "justify-end"
+                }`}
               >
-                {m.text}
-              </p>
+                <p
+                  className={
+                    m.role === "bot"
+                      ? "bg-cyan-200 text-black rounded-full px-4 py-2 inline-flex items-center max-w-[70%]"
+                      : "bg-emerald-400 text-black rounded-full px-4 py-2 inline-flex items-center max-w-[70%]"
+                  }
+                >
+                  {m.text}
+                </p>
+              </div>
             ))}
             <button onClick={startListening}>Speak</button>
           </div>
