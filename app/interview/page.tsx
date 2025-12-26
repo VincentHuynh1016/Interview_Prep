@@ -74,20 +74,20 @@ export default function InterviewPage() {
       />
       <div
         ref={chatRef}
-        className="w-[30%] h-[90%] rounded-xl bg-white p-4 overflow-y-auto"
+        className="w-[30%] h-[90%] rounded-xl bg-white p-4 mb-4 overflow-y-auto"
       >
         {messages.map((m, i) => (
           <div
             key={i}
-            className={`flex ${
+            className={`flex mb-3 ${
               m.role === "bot" ? "justify-start" : "justify-end"
             }`}
           >
             <p
               className={
                 m.role === "bot"
-                  ? "bg-cyan-200 text-black rounded-full px-4 py-2 inline-flex items-center max-w-[70%]"
-                  : "bg-emerald-400 text-black rounded-full px-4 py-2 inline-flex items-center max-w-[70%]"
+                  ? "bg-cyan-200 text-black rounded-full px-4 py-2 inline-flex items-center"
+                  : "bg-emerald-400 text-black rounded-full px-4 py-2 inline-flex items-center"
               }
             >
               {m.text}
