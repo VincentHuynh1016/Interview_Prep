@@ -2,19 +2,30 @@
 import { useEffect, useRef, useState } from "react";
 
 export default function InterviewPage() {
+  //Access to video element
   const videoRef = useRef<HTMLVideoElement>(null);
+  //Grabs a list of interview questions
   const [questions, setQuestions] = useState<any[]>([]);
-
-  const [messages, setMessages] = useState([
-    { role: "bot", text: "Tell me about yourself?" },
-  ]);
+  //Holds the chat messages
+  const [messages, setMessages] = useState<any[]>([]);
+  //Access to chat container for scrolling
   const chatRef = useRef<HTMLDivElement | null>(null);
-
+  //To check if the audio is unlocked
+  const [audioUnlocked, setAudioUnlocked] = useState(false);
   //Used to access the questions array
   const [qIndex, setQIndex] = useState(0);
 
+
+  function unlockAudioOnce() {
+    if (!audioUnlocked) {
+      window.speechSynthesis.speak(new SpeechSynthesisUtterance(""));
+      setAudioUnlocked(true);
+    }
+  }
+
   //This is for accessing the speech recognition
   function startListening() {
+    unlockAudioOnce;
     //Creates a new instance of speech recognition
     const SpeechRecognition =
       (window as any).SpeechRecognition ||
@@ -33,13 +44,36 @@ export default function InterviewPage() {
       const transcript = e.results[0][0].transcript;
       recognition.stop();
       setMessages((prev) => [...prev, { role: "user", text: transcript }]);
-      if (!questions[qIndex + 1]) return;
-      const nextQ = questions[qIndex + 1].text;
-      setMessages((prev) => [...prev, { role: "bot", text: nextQ }]);
+      // if (!questions[qIndex + 1]) return;
+      // const nextQ = questions[qIndex + 1].text;
+      // setMessages((prev) => [...prev, { role: "bot", text: nextQ }]);
       setQIndex((i) => i + 1);
     };
   }
 
+  // This if for accessing the speech synthesis
+  function startSpeaking(text: string) {
+    const synth = window.speechSynthesis;
+    synth.cancel();
+
+    //Get the most recent
+    const utter = new SpeechSynthesisUtterance(text);
+    synth.speak(utter);
+  }
+  useEffect(() => {
+    if (!questions[qIndex]) return;
+    const txt = questions[qIndex].text;
+
+    setMessages((prev) => {
+      const last = prev[prev.length - 1];
+      if (last?.role === "bot" && last?.text === txt) return prev;
+      return [...prev, { role: "bot", text: txt }];
+    });
+
+    startSpeaking(txt);
+  }, [qIndex, questions]);
+
+  //Scroll to bottom of chat when new message is added
   useEffect(() => {
     if (chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
@@ -101,3 +135,6 @@ export default function InterviewPage() {
     </div>
   );
 }
+
+// NEXT STEP:
+// USE MDN'S API SPEECH TO READ THE QUESTIONS ALOUD
