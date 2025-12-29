@@ -15,7 +15,7 @@ export default function InterviewPage() {
   //Used to access the questions array
   const [qIndex, setQIndex] = useState(0);
 
-
+  //Unlocks audio on first user interaction
   function unlockAudioOnce() {
     if (!audioUnlocked) {
       window.speechSynthesis.speak(new SpeechSynthesisUtterance(""));
@@ -25,7 +25,6 @@ export default function InterviewPage() {
 
   //This is for accessing the speech recognition
   function startListening() {
-    unlockAudioOnce;
     //Creates a new instance of speech recognition
     const SpeechRecognition =
       (window as any).SpeechRecognition ||
@@ -70,8 +69,9 @@ export default function InterviewPage() {
       return [...prev, { role: "bot", text: txt }];
     });
 
+    if (!audioUnlocked) return;
     startSpeaking(txt);
-  }, [qIndex, questions]);
+  }, [questions, qIndex, audioUnlocked]);
 
   //Scroll to bottom of chat when new message is added
   useEffect(() => {
@@ -98,6 +98,7 @@ export default function InterviewPage() {
 
   return (
     <div
+      onClick={unlockAudioOnce}
       className="flex h-screen items-start p-6 bg-zinc-900 gap-4"
       style={{ backgroundColor: "rgb(43, 48, 59)" }}
     >
