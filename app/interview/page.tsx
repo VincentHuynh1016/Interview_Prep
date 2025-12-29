@@ -14,6 +14,8 @@ export default function InterviewPage() {
   const [audioUnlocked, setAudioUnlocked] = useState(false);
   //Used to access the questions array
   const [qIndex, setQIndex] = useState(0);
+  //To check if the interview has started
+  const [started, setStarted] = useState(false);
 
   //Unlocks audio on first user interaction
   function unlockAudioOnce() {
@@ -23,11 +25,9 @@ export default function InterviewPage() {
     }
   }
 
-  const [started, setStarted] = useState(false);
-
   function startInterview() {
-    unlockAudioOnce();
-    setStarted(true);
+    unlockAudioOnce(); // browser permission
+    setStarted(true); // switch panel → chat
   }
 
   //This is for accessing the speech recognition
@@ -105,7 +105,6 @@ export default function InterviewPage() {
 
   return (
     <div
-      onClick={unlockAudioOnce}
       className="flex h-screen items-start p-6 bg-zinc-900 gap-4"
       style={{ backgroundColor: "rgb(43, 48, 59)" }}
     >
@@ -114,42 +113,40 @@ export default function InterviewPage() {
         autoPlay
         className="w-[92%] h-[90%] rounded-xl object-cover"
       />
-      <div
-        ref={chatRef}
-        className="w-[30%] h-[90%] rounded-xl bg-white p-4 mb-4 overflow-y-auto"
-      >
-        {!started && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-50">
-            <button
-              onClick={startInterview}
-              className="bg-white px-6 py-3 rounded-lg text-black text-lg"
+
+      {!started ? (
+        <div className="w-[30%] h-[90%] flex flex-col justify-center items-center bg-white rounded-xl text-black">
+          <p className="text-lg mb-4">Ready to join?</p>
+          <button onClick={startInterview}>Join call</button>
+        </div>
+      ) : (
+        <div
+          ref={chatRef}
+          className="w-[30%] h-[90%] rounded-xl bg-white p-4 mb-4 overflow-y-auto"
+        >
+          {messages.map((m, i) => (
+            <div
+              key={i}
+              className={`flex mb-3 ${
+                m.role === "bot" ? "justify-start" : "justify-end"
+              }`}
             >
-              Start Interview
-            </button>
-          </div>
-        )}
-        {messages.map((m, i) => (
-          <div
-            key={i}
-            className={`flex mb-3 ${
-              m.role === "bot" ? "justify-start" : "justify-end"
-            }`}
-          >
-            <p
-              className={
-                m.role === "bot"
-                  ? "bg-cyan-200 text-black rounded-full px-4 py-2 inline-flex items-center"
-                  : "bg-emerald-400 text-black rounded-full px-4 py-2 inline-flex items-center"
-              }
-            >
-              {m.text}
-            </p>
-          </div>
-        ))}
-        <button className="text-black" onClick={startListening}>
-          Speak
-        </button>
-      </div>
+              <p
+                className={
+                  m.role === "bot"
+                    ? "bg-cyan-200 text-black rounded-full px-4 py-2"
+                    : "bg-emerald-400 text-black rounded-full px-4 py-2"
+                }
+              >
+                {m.text}
+              </p>
+            </div>
+          ))}
+          <button className="text-black" onClick={startListening}>
+            Speak
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -162,4 +159,3 @@ export default function InterviewPage() {
 // * Or start audio only after they click your existing **Speak** button (same idea).
 
 // If you want it to feel automatic, the “click anywhere to start” pattern is the closest you’ll get while staying consistent across browsers.
-
