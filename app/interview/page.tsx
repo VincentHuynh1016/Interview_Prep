@@ -50,9 +50,6 @@ export default function InterviewPage() {
       const transcript = e.results[0][0].transcript;
       recognition.stop();
       setMessages((prev) => [...prev, { role: "user", text: transcript }]);
-      // if (!questions[qIndex + 1]) return;
-      // const nextQ = questions[qIndex + 1].text;
-      // setMessages((prev) => [...prev, { role: "bot", text: nextQ }]);
       setQIndex((i) => i + 1);
     };
   }
@@ -66,6 +63,7 @@ export default function InterviewPage() {
     const utter = new SpeechSynthesisUtterance(text);
     synth.speak(utter);
   }
+
   useEffect(() => {
     if (!questions[qIndex]) return;
     const txt = questions[qIndex].text;
@@ -105,7 +103,7 @@ export default function InterviewPage() {
 
   return (
     <div
-      className="flex h-screen items-start p-6 bg-zinc-900 gap-4"
+      className="flex h-screen p-6 gap-4"
       style={{ backgroundColor: "rgb(43, 48, 59)" }}
     >
       <video
