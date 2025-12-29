@@ -23,6 +23,13 @@ export default function InterviewPage() {
     }
   }
 
+  const [started, setStarted] = useState(false);
+
+  function startInterview() {
+    unlockAudioOnce();
+    setStarted(true);
+  }
+
   //This is for accessing the speech recognition
   function startListening() {
     //Creates a new instance of speech recognition
@@ -111,6 +118,16 @@ export default function InterviewPage() {
         ref={chatRef}
         className="w-[30%] h-[90%] rounded-xl bg-white p-4 mb-4 overflow-y-auto"
       >
+        {!started && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-50">
+            <button
+              onClick={startInterview}
+              className="bg-white px-6 py-3 rounded-lg text-black text-lg"
+            >
+              Start Interview
+            </button>
+          </div>
+        )}
         {messages.map((m, i) => (
           <div
             key={i}
@@ -138,4 +155,11 @@ export default function InterviewPage() {
 }
 
 // NEXT STEP:
-// USE MDN'S API SPEECH TO READ THE QUESTIONS ALOUD
+// What you *can* do instead:
+
+// * **Show the first question as text immediately**, and show a big **“Start interview (enables audio)”** button.
+// * Or **auto-start after any user gesture** (first click anywhere / keypress) by attaching `unlockAudioOnce` to the container.
+// * Or start audio only after they click your existing **Speak** button (same idea).
+
+// If you want it to feel automatic, the “click anywhere to start” pattern is the closest you’ll get while staying consistent across browsers.
+
