@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 export default function InterviewPage() {
@@ -115,6 +116,7 @@ export default function InterviewPage() {
       {!started ? (
         <div className="w-[30%] h-[90%] flex flex-col justify-center items-center bg-white rounded-xl text-black">
           <p className="text-2xl mb-4">Ready to join?</p>
+          <Image src ="/interviewer_icon.svg" alt="interviewer_icon" width = {100} height = {100}/>
           <button
             className="bg-brand bg-blue-700 text-white box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-lg text-sm px-4 py-2.5 focus:outline-none mt-3"
             onClick={startInterview}
