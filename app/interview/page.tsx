@@ -18,6 +18,9 @@ export default function InterviewPage() {
   //To check if the interview has started
   const [started, setStarted] = useState(false);
 
+  //Is Speaking state
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
   //Unlocks audio on first user interaction
   function unlockAudioOnce() {
     if (!audioUnlocked) {
@@ -62,6 +65,8 @@ export default function InterviewPage() {
 
     //Get the most recent
     const utter = new SpeechSynthesisUtterance(text);
+    utter.onstart = () => setIsSpeaking(true);
+    utter.onend = () => setIsSpeaking(false);
     synth.speak(utter);
   }
 
@@ -107,11 +112,42 @@ export default function InterviewPage() {
       className="flex h-screen p-6 gap-4"
       style={{ backgroundColor: "rgb(43, 48, 59)" }}
     >
-      <video
-        ref={videoRef}
-        autoPlay
-        className="w-[92%] h-[90%] rounded-xl object-cover"
-      />
+      <div className="relative w-[92%] h-[90%]">
+        <video
+          ref={videoRef}
+          autoPlay
+          className="w-full h-full rounded-xl object-cover"
+        />
+
+        {started && (
+          <div
+            className="absolute bottom-4 right-4 px-3 py-7 rounded-lg size-32 place-items-center"
+            style={{ backgroundColor: "rgb(43, 48, 59)" }}
+          >
+            <Image
+              src="/interviewer_icon.svg"
+              alt="interviewer_icon"
+              width={60}
+              height={60}
+            />
+            <div className="flex items-center text-xs py-2 gap-2 leading-none">
+              <p>ALEX</p>
+              <div className="flex gap-1 ">
+                {[0, 150, 300].map((d, i) => (
+                  <span
+                    key={i}
+                    className={`
+        bg-cyan-500 rounded-full transition-all duration-200
+        ${isSpeaking ? "w-1 h-4 animate-bounce" : "w-2 h-2"}
+      `}
+                    style={isSpeaking ? { animationDelay: `${d}ms` } : {}}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
 
       {!started ? (
         <div className="w-[30%] h-[90%] flex flex-col justify-center items-center bg-white rounded-xl text-black">
