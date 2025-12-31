@@ -18,6 +18,9 @@ export default function InterviewPage() {
   //To check if the interview has started
   const [started, setStarted] = useState(false);
 
+  //Is Speaking state
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
   //Unlocks audio on first user interaction
   function unlockAudioOnce() {
     if (!audioUnlocked) {
@@ -62,6 +65,8 @@ export default function InterviewPage() {
 
     //Get the most recent
     const utter = new SpeechSynthesisUtterance(text);
+    utter.onstart = () => setIsSpeaking(true);
+    utter.onend = () => setIsSpeaking(false);
     synth.speak(utter);
   }
 
@@ -107,18 +112,54 @@ export default function InterviewPage() {
       className="flex h-screen p-6 gap-4"
       style={{ backgroundColor: "rgb(43, 48, 59)" }}
     >
-      <video
-        ref={videoRef}
-        autoPlay
-        className="w-[92%] h-[90%] rounded-xl object-cover"
-      />
+      <div className="relative w-[92%] h-[90%]">
+        <video
+          ref={videoRef}
+          autoPlay
+          className="w-full h-full rounded-xl object-cover"
+        />
+
+        {started && (
+          <div
+            className="absolute bottom-4 right-4 px-3 py-7 rounded-lg size-32 place-items-center"
+            style={{ backgroundColor: "rgb(43, 48, 59)" }}
+          >
+            <Image
+              src="/interviewer_icon.svg"
+              alt="interviewer_icon"
+              width={60}
+              height={60}
+            />
+            <div className="flex items-center py-3 gap-10 leading-none">
+              <p className = "text-xs">ALEX</p>
+              <div className="flex gap-1 ">
+                {[0, 150, 300].map((d, i) => (
+                  <span
+                    key={i}
+                    className={`
+        bg-cyan-500 rounded-full transition-all duration-200
+        ${isSpeaking ? "w-1 h-4 animate-bounce" : "w-1 h-1"}
+      `}
+                    style={isSpeaking ? { animationDelay: `${d}ms` } : {}}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
 
       {!started ? (
         <div className="w-[30%] h-[90%] flex flex-col justify-center items-center bg-white rounded-xl text-black">
-          <p className="text-2xl mb-4">Ready to join?</p>
-          <Image src ="/interviewer_icon.svg" alt="interviewer_icon" width = {100} height = {100}/>
+          <p className="text-2xl font-semibold mb-4">Ready to join?</p>
+          <Image
+            src="/interviewer_icon.svg"
+            alt="interviewer_icon"
+            width={100}
+            height={100}
+          />
           <button
-            className="bg-brand bg-blue-700 text-white box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-lg text-sm px-4 py-2.5 focus:outline-none mt-3"
+            className="bg-brand bg-blue-700 text-white box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs leading-5 rounded-lg text-sm px-4 py-2.5 focus:outline-none mt-3 font-semibold"
             onClick={startInterview}
           >
             Join call
@@ -156,11 +197,3 @@ export default function InterviewPage() {
   );
 }
 
-// NEXT STEP:
-// What you *can* do instead:
-
-// * **Show the first question as text immediately**, and show a big **“Start interview (enables audio)”** button.
-// * Or **auto-start after any user gesture** (first click anywhere / keypress) by attaching `unlockAudioOnce` to the container.
-// * Or start audio only after they click your existing **Speak** button (same idea).
-
-// If you want it to feel automatic, the “click anywhere to start” pattern is the closest you’ll get while staying consistent across browsers.
