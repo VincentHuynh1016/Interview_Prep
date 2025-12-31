@@ -1,6 +1,6 @@
 ---
 
-# 🎤 Interview Prep (AI Voice Interview Simulator)
+# 🎤 Interview Prep
 
 A web-based interview practice tool that simulates a real interview experience using **video, voice, and AI-style prompts**.
 Designed to help users practice answering interview questions aloud in a realistic, distraction-free environment.
