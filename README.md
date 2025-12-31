@@ -1,5 +1,3 @@
-Here’s a **clean, professional README** you can use as-is.
-
 ---
 
 # 🎤 Interview Prep (AI Voice Interview Simulator)
