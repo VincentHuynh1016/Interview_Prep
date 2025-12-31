@@ -130,15 +130,15 @@ export default function InterviewPage() {
               width={60}
               height={60}
             />
-            <div className="flex items-center text-xs py-2 gap-2 leading-none">
-              <p>ALEX</p>
+            <div className="flex items-center py-3 gap-10 leading-none">
+              <p className = "text-xs">ALEX</p>
               <div className="flex gap-1 ">
                 {[0, 150, 300].map((d, i) => (
                   <span
                     key={i}
                     className={`
         bg-cyan-500 rounded-full transition-all duration-200
-        ${isSpeaking ? "w-1 h-4 animate-bounce" : "w-2 h-2"}
+        ${isSpeaking ? "w-1 h-4 animate-bounce" : "w-1 h-1"}
       `}
                     style={isSpeaking ? { animationDelay: `${d}ms` } : {}}
                   />
