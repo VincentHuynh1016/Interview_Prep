@@ -197,11 +197,3 @@ export default function InterviewPage() {
   );
 }
 
-// NEXT STEP:
-// What you *can* do instead:
-
-// * **Show the first question as text immediately**, and show a big **“Start interview (enables audio)”** button.
-// * Or **auto-start after any user gesture** (first click anywhere / keypress) by attaching `unlockAudioOnce` to the container.
-// * Or start audio only after they click your existing **Speak** button (same idea).
-
-// If you want it to feel automatic, the “click anywhere to start” pattern is the closest you’ll get while staying consistent across browsers.
