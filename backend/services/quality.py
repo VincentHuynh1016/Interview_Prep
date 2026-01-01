@@ -7,11 +7,11 @@ but for optimization we can load the model once and use it multiple times
 
 For interview scoring with embeddings:
 
-Question ↔ Answer → relevance check → expect 0.4–0.6
+≥ 0.65 → Good (clearly answers the question)
 
-Answer ↔ Ideal Answer → quality check → expect 0.7–0.85
+0.45 – 0.65 → Neutral / partial (on topic, incomplete or vague)
 
-< 0.40 → mostly off-topic
+< 0.45 → Bad (off-topic or weakly related)
 """
 from sentence_transformers import SentenceTransformer
 import torch 
