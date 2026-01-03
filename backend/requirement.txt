@@ -8,3 +8,5 @@ transformers
 scipy
 torch
 sentence_transformers
+OpenAI
+dotenv
