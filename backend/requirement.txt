@@ -7,3 +7,5 @@ nltk
 transformers
 scipy
 torch
+OpenAI
+dotenv
