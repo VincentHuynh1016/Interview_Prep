@@ -131,7 +131,7 @@ export default function InterviewPage() {
               height={60}
             />
             <div className="flex items-center py-3 gap-10 leading-none">
-              <p className = "text-xs">ALEX</p>
+              <p className="text-xs">ALEX</p>
               <div className="flex gap-1 ">
                 {[0, 150, 300].map((d, i) => (
                   <span
@@ -170,6 +170,7 @@ export default function InterviewPage() {
           ref={chatRef}
           className="w-[30%] h-[90%] rounded-xl bg-white p-4 mb-4 overflow-y-auto"
         >
+          <div className = "flex justify-center text-black mb-5 font-semibold"> LIVE TRANSCRIPT</div>
           {messages.map((m, i) => (
             <div
               key={i}
@@ -188,7 +189,14 @@ export default function InterviewPage() {
               </p>
             </div>
           ))}
-          <button className="text-black" onClick={startListening}>
+        </div>
+      )}
+      {started && (
+        <div className="flex absolute bottom-10 justify-center w-full items-center leading-none">
+          <button
+            className="box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-lg text-sm px-4 py-2.5 focus:outline-none mt-3 bg-blue-700"
+            onClick={startListening}
+          >
             Speak
           </button>
         </div>
@@ -196,4 +204,3 @@ export default function InterviewPage() {
     </div>
   );
 }
-
