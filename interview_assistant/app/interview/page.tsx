@@ -1,8 +1,10 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function InterviewPage() {
+  const router = useRouter();
   //Access to video element
   const videoRef = useRef<HTMLVideoElement>(null);
   //Grabs a list of interview questions
@@ -17,9 +19,19 @@ export default function InterviewPage() {
   const [qIndex, setQIndex] = useState(0);
   //To check if the interview has started
   const [started, setStarted] = useState(false);
+  //To check if we have no other questions left
+  const [noQuestions, setNoQuestions] = useState(false);
+
+  //To record the user's response
+  const [response, setResponse] = useState<string[]>([]);
 
   //Is Speaking state
   const [isSpeaking, setIsSpeaking] = useState(false);
+
+  function handleClick() {
+    router.push("/results");
+    console.log("Results button has been clicked");
+  }
 
   //Unlocks audio on first user interaction
   function unlockAudioOnce() {
@@ -54,6 +66,7 @@ export default function InterviewPage() {
       const transcript = e.results[0][0].transcript;
       recognition.stop();
       setMessages((prev) => [...prev, { role: "user", text: transcript }]);
+      setResponse((prev) => [...prev, transcript]);
       setQIndex((i) => i + 1);
     };
   }
@@ -71,7 +84,13 @@ export default function InterviewPage() {
   }
 
   useEffect(() => {
-    if (!questions[qIndex]) return;
+    if (qIndex >= questions.length) {
+      setNoQuestions(true);
+      return;
+    }
+
+    setNoQuestions(false);
+
     const txt = questions[qIndex].text;
 
     setMessages((prev) => {
@@ -106,6 +125,40 @@ export default function InterviewPage() {
       }
     });
   }, []);
+
+  //This will call the backend once we have no questions left
+  useEffect(() => {
+    const run = async () => {
+      //Get the sentiment score
+      await fetch("http://localhost:5000/api/sentiment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          responses: response
+        }),
+      });
+
+      await fetch("http://localhost:5000/api/quality", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          questions: questions,
+          responses: response
+        })
+      });
+
+      await fetch("http://localhost:5000/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          questions: questions,
+          responses: response,
+        }),
+      });
+    };
+
+    if (noQuestions) run();
+  }, [noQuestions]);
 
   return (
     <div
@@ -170,7 +223,9 @@ export default function InterviewPage() {
           ref={chatRef}
           className="w-[30%] h-[90%] rounded-xl bg-white p-4 mb-4 overflow-y-auto"
         >
-          <div className = "flex justify-center text-black mb-5 font-semibold"> LIVE TRANSCRIPT</div>
+          <div className="flex justify-center text-black mb-5 font-semibold">
+            LIVE TRANSCRIPT
+          </div>
           {messages.map((m, i) => (
             <div
               key={i}
@@ -192,12 +247,22 @@ export default function InterviewPage() {
         </div>
       )}
       {started && (
-        <div className="flex absolute bottom-10 justify-center w-full items-center leading-none">
+        <div className="flex absolute bottom-10 justify-center w-full items-center leading-none gap-3">
           <button
             className="box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-lg text-sm px-4 py-2.5 focus:outline-none mt-3 bg-blue-700"
             onClick={startListening}
           >
             Speak
+          </button>
+        </div>
+      )}
+      {noQuestions && started && (
+        <div className="flex absolute bottom-10 justify-center w-full items-center leading-none gap-3">
+          <button
+            className="box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-lg text-sm px-4 py-2.5 focus:outline-none mt-3 bg-blue-700"
+            onClick={handleClick}
+          >
+            Results
           </button>
         </div>
       )}
