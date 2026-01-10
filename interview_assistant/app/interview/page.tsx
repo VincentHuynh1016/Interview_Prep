@@ -130,24 +130,24 @@ export default function InterviewPage() {
   useEffect(() => {
     const run = async () => {
       //Get the sentiment score
-      await fetch("http://localhost:5000/api/sentiment", {
+      await fetch("http://localhost:5001/api/sentiment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          responses: response
+          responses: response,
         }),
       });
 
-      await fetch("http://localhost:5000/api/quality", {
+      await fetch("http://localhost:5001/api/quality", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           questions: questions,
-          responses: response
-        })
+          responses: response,
+        }),
       });
 
-      await fetch("http://localhost:5000/api/feedback", {
+      await fetch("http://localhost:5001/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
