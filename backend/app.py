@@ -6,15 +6,18 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
+# This is where we will store all of the data
+LATEST_RESULT = dict()
 
 # This will take in each inverview response and return the sentiment score
 @app.route("/api/sentiment", methods=["POST"])
 def get_sentiment():
     from services.sentiment import roberta_sentiment_analysis
-    #List of interview responses from the user
+    # List of interview responses from the user
     data = request.get_json()
     interviewResponses = data.get("responses")
     sentiment = [roberta_sentiment_analysis(response) for response in interviewResponses]
+    LATEST_RESULT["sentiment"] = sentiment
 
     return jsonify({"sentiment_scores": sentiment})
 
@@ -32,6 +35,8 @@ def get_quality():
         similarityScore = compute_cosine_similarity(questionEmbedding, answerEmbedding)
         qualityScores.append(similarityScore)
 
+    LATEST_RESULT["qualityScore"] = qualityScores
+
     return jsonify({"quality_scores": qualityScores})
 
 
@@ -43,4 +48,11 @@ def get_feedback():
     interviewQuestions = data.get("questions")
     interviewResponses = data.get("responses")
     feedback = generate_feedback(interviewQuestions, interviewResponses)
+
+    LATEST_RESULT["feedback"] = feedback
+
     return jsonify({"feedback": feedback})
+
+@app.route("/api/results", methods = ["GET"])
+def get_results():
+    return jsonify({"results": LATEST_RESULT})
