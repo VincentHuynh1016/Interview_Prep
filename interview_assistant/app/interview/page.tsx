@@ -128,8 +128,11 @@ export default function InterviewPage() {
 
   //This will call the backend once we have no questions left
   useEffect(() => {
+    if (!noQuestions) return;
+
+    const questionTexts = questions.map((q) => q.text);
+
     const run = async () => {
-      //Get the sentiment score
       await fetch("http://localhost:5001/api/sentiment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -142,7 +145,7 @@ export default function InterviewPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          questions: questions,
+          questions: questionTexts,
           responses: response,
         }),
       });
@@ -151,14 +154,14 @@ export default function InterviewPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          questions: questions,
+          questions: questionTexts,
           responses: response,
         }),
       });
     };
 
-    if (noQuestions) run();
-  }, [noQuestions]);
+    run();
+  }, [noQuestions, questions, response]);
 
   return (
     <div
