@@ -128,7 +128,9 @@ export default function InterviewPage() {
 
   //This will call the backend once we have no questions left
   useEffect(() => {
-    if (!noQuestions) return;
+    if (questions.length === 0 || response.length !== questions.length) {
+      return;
+    }
 
     const questionTexts = questions.map((q) => q.text);
 
@@ -136,9 +138,7 @@ export default function InterviewPage() {
       await fetch("http://localhost:5001/api/sentiment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          responses: response,
-        }),
+        body: JSON.stringify({ responses: response }),
       });
 
       await fetch("http://localhost:5001/api/quality", {
@@ -161,7 +161,7 @@ export default function InterviewPage() {
     };
 
     run();
-  }, [noQuestions, questions, response]);
+  }, [response, questions]);
 
   return (
     <div

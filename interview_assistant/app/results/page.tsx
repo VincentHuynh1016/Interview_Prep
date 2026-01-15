@@ -11,29 +11,18 @@ export default function Results() {
       try {
         const res = await fetch("http://localhost:5001/api/results");
         const data = await res.json();
-
-        console.log("RAW API RESPONSE:", data);
-        console.log("QUALITY SCORES:", data.results?.qualityScore);
-        console.log("SENTIMENT SCORES:", data.results?.sentiment);
-        
+        console.log(data.results.feedback);
+        console.log(data.results.qualityScore);
+        console.log(data.results.sentiment);
         setResults(data.results);
       } catch (error) {
-        console.error("Error fetching results:", error);
+        console.error("Error when fetching the results:", error);
       } finally {
         setLoading(false);
       }
     };
-
     run();
   }, []);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-gray-600">Loading...</div>
-      </div>
-    );
-  }
 
   if (!results) {
     return (
@@ -43,15 +32,16 @@ export default function Results() {
     );
   }
 
-  // Calculate averages
+  //Calculate the averages
   const avgQuality =
     results.qualityScore?.reduce((a: number, b: number) => a + b, 0) /
       results.qualityScore?.length || 0;
+
   const avgSentimentPositive =
     results.sentiment?.reduce((a: number, s: number[]) => a + s[1], 0) /
       results.sentiment?.length || 0;
 
-  // Convert to percentages
+  //Convert the scores into percentages
   const qualityPercent = (avgQuality * 100).toFixed(1);
   const sentimentPercent = (avgSentimentPositive * 100).toFixed(1);
 
@@ -107,8 +97,8 @@ export default function Results() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
-                  <Award className="w-4 h-4" />
-                  <span className="text-sm font-medium">AVG QUALITY</span>
+                  <Award className="w-5 h-5" />
+                  <span className="text-base font-medium">AVG QUALITY</span>
                 </div>
               </div>
             </div>
@@ -147,8 +137,8 @@ export default function Results() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
-                  <TrendingUp className="w-4 h-4" />
-                  <span className="text-sm font-medium">AVG SENTIMENT</span>
+                  <TrendingUp className="w-5 h-5" />
+                  <span className="text-base font-medium">AVG SENTIMENT</span>
                 </div>
               </div>
             </div>
@@ -163,7 +153,7 @@ export default function Results() {
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
                   <MessageSquare className="w-4 h-4" />
-                  <span className="text-sm font-medium">QUESTIONS</span>
+                  <span className="text-base font-medium">QUESTIONS</span>
                 </div>
               </div>
             </div>
@@ -180,27 +170,25 @@ export default function Results() {
               <table className="w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
                       Question
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
                       Quality Score
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
                       Sentiment (Negative)
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
                       Sentiment (Positive)
                     </th>
                   </tr>
                 </thead>
+
                 <tbody className="bg-white divide-y divide-gray-200">
                   {results.qualityScore?.map(
                     (quality: number, index: number) => (
                       <tr key={index} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          Question {index + 1}
-                        </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                           <div className="flex items-center gap-2">
                             <div className="w-24 bg-gray-200 rounded-full h-2">
@@ -214,6 +202,7 @@ export default function Results() {
                             </span>
                           </div>
                         </td>
+
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                           <div className="flex items-center gap-2">
                             <div className="w-24 bg-gray-200 rounded-full h-2">
@@ -231,6 +220,7 @@ export default function Results() {
                             </span>
                           </div>
                         </td>
+
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                           <div className="flex items-center gap-2">
                             <div className="w-24 bg-gray-200 rounded-full h-2">
